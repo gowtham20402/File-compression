@@ -2,8 +2,8 @@ import java.io.*;
 import java.util.*;
 
 public class HuffCompression {
-    private static StringBuilder sb = new StringBuilder();
-    private static Map<Byte, String> huffmap = new HashMap<>();
+    final private static StringBuilder sb = new StringBuilder();
+    final private static Map<Byte, String> huffmap = new HashMap<>();
 
     public static void compress(String src, String dst) {
         try {
@@ -28,12 +28,11 @@ public class HuffCompression {
         MinPriorityQueue<ByteNode> nodes = getByteNodes(bytes);
         ByteNode root = createHuffmanTree(nodes);
         Map<Byte, String> huffmanCodes = getHuffCodes(root);
-        byte[] huffmanCodeBytes = zipBytesWithCodes(bytes, huffmanCodes);
-        return huffmanCodeBytes;
+        return zipBytesWithCodes(bytes, huffmanCodes);
     }
 
     private static MinPriorityQueue<ByteNode> getByteNodes(byte[] bytes) {
-        MinPriorityQueue<ByteNode> nodes = new MinPriorityQueue<ByteNode>();
+        MinPriorityQueue<ByteNode> nodes = new MinPriorityQueue<>();
         Map<Byte, Integer> tempMap = new HashMap<>();
         for (byte b : bytes) {
             Integer value = tempMap.get(b);
@@ -102,9 +101,7 @@ public class HuffCompression {
             FileInputStream inStream = new FileInputStream(src);
             ObjectInputStream objectInStream = new ObjectInputStream(inStream);
             byte[] huffmanBytes = (byte[]) objectInStream.readObject();
-            Map<Byte, String> huffmanCodes =
-                    (Map<Byte, String>) objectInStream.readObject();
-
+            Map<Byte, String> huffmanCodes = (Map<Byte, String>) objectInStream.readObject();
             byte[] bytes = decomp(huffmanCodes, huffmanBytes);
             OutputStream outStream = new FileOutputStream(dst);
             outStream.write(bytes);
@@ -122,7 +119,7 @@ public class HuffCompression {
         for (int i = 0; i < huffmanBytes.length; i++) {
             byte b = huffmanBytes[i];
             boolean flag = (i == huffmanBytes.length - 1);
-            sb1.append(convertbyteInBit(!flag, b));
+            sb1.append(convertByteInBit(!flag, b));
         }
         Map<String, Byte> map = new HashMap<>();
         for (Map.Entry<Byte, String> entry : huffmanCodes.entrySet()) {
@@ -142,13 +139,13 @@ public class HuffCompression {
             list.add(b);
             i += count;
         }
-        byte b[] = new byte[list.size()];
-        for (int i = 0; i < b.length; i++)
-            b[i] = list.get(i);
-        return b;
+        byte[] bytes = new byte[list.size()];
+        for (int i = 0; i < bytes.length; i++)
+            bytes[i] = list.get(i);
+        return bytes;
     }
 
-    private static String convertbyteInBit(boolean flag, byte b) {
+    private static String convertByteInBit(boolean flag, byte b) {
         int byte0 = b;
         if (flag) byte0 |= 256;
         String str0 = Integer.toBinaryString(byte0);
